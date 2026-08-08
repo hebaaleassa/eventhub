@@ -1,0 +1,30 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "EventHub REST API",
+  "keywords": [
+    "events",
+    "express",
+    "mongodb"
+  ],
+  "homepage": "https://github.com/hebaaleassa/eventhub#readme",
+  "bugs": {
+    "url": "https://github.com/hebaaleassa/eventhub/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hebaaleassa/eventhub.git"
+  },
+  "license": "ISC",
+  "author": "Heba",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.9.1"
+  }
+}
