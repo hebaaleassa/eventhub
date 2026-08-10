@@ -12,7 +12,16 @@ const router = express.Router();
 // GET all events
 router.get("/", async (req, res) => {
 
-	const {q, category, city} = req.query;
+	const {q, category, city, page=1, size=10} = req.query;
+	const sizeNum = Number(size);
+	const pageNum = Number(page);
+	if (!Number.isInteger(sizeNum) || !Number.isInteger(pageNum) || sizeNum <= 0 || pageNum <= 0) {
+		return res.status(400).json({ message: "Invalid page or size parameters" });
+	}
+
+	const skip = (pageNum - 1) * sizeNum;
+
+	// const skip = (parseInt(page) - 1) * limit;
 	const filter = {};
 	// search by name or description, i --> for case-insensitive،
 	if (q)
@@ -31,7 +40,7 @@ router.get("/", async (req, res) => {
 		filter.venue = { $in: venueIds };
 	}
 		// filter.venue.city = city;
-	const events = await Event.find(filter).populate("venue").populate("organizer");
+	const events = await Event.find(filter).skip(skip).limit(sizeNum).populate("venue").populate("organizer");
 	res.json(events);
 });
 
@@ -131,7 +140,7 @@ router.put("/:id", async (req, res) => {
 		if (!mongoose.Types.ObjectId.isValid(req.params.id))
 			return res.status(400).json({ message: "Invalid event ID" });
 		
-		const event = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true, runsValidators: true });
+		const event = await Event.findByIdAndUpdate(req.params.id, req.body, { returnDocument: true, runValidators: true });
 
 		if (!event)
 			return res.status(404).json({ message: "Event not found" });

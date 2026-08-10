@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes.js";
 import venueRoutes from "./routes/venueRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import Registration from "./models/Registration.js";
+import statsRoutes from "./routes/statsRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT;
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/venues", venueRoutes);
 app.use("/api/events", eventRoutes);
+app.use("/api/stats", statsRoutes);
 
 async function startServer() {
 	try {
