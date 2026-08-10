@@ -1,6 +1,8 @@
 import express from "express";
 import Event from "../models/Event.js";
 import User from "../models/User.js";
+import Venue from "../models/Venue.js";
+
 
 import Registration from "../models/Registration.js";
 import mongoose from "mongoose";
@@ -9,7 +11,27 @@ const router = express.Router();
 
 // GET all events
 router.get("/", async (req, res) => {
-	const events = await Event.find().populate("venue").populate("organizer");
+
+	const {q, category, city} = req.query;
+	const filter = {};
+	// search by name or description, i --> for case-insensitive،
+	if (q)
+	{
+		filter.$or = [
+			{ name: { $regex: q, $options: "i" } },
+			{ description: { $regex: q, $options: "i" } }
+		];
+	}
+	if (category)
+		filter.categories  = category;
+	if (city)
+	{
+		const venuesInCity = await Venue.find({ city: city });
+		const venueIds = venuesInCity.map(venue => venue._id);
+		filter.venue = { $in: venueIds };
+	}
+		// filter.venue.city = city;
+	const events = await Event.find(filter).populate("venue").populate("organizer");
 	res.json(events);
 });
 
