@@ -1,6 +1,7 @@
 import "dotenv/config";
 import mongoose from "mongoose";
 import express from "express";
+import cors from "cors";
 import User from "./models/User.js";
 import userRoutes from "./routes/userRoutes.js";
 import venueRoutes from "./routes/venueRoutes.js";
@@ -9,6 +10,9 @@ import Registration from "./models/Registration.js";
 import statsRoutes from "./routes/statsRoutes.js";
 
 const app = express();
+app.use(cors({
+  origin: "http://localhost:5173"
+}));
 const PORT = process.env.PORT;
 app.use(express.json());
 app.use("/api/users", userRoutes);
