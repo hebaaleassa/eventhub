@@ -24,8 +24,7 @@ onMounted(async () => {
 
 
 	await loadAttendees()
-
-attendees.value = await attendeesResponse.json()
+	attendees.value = await attendeesResponse.json()
 
 })
 

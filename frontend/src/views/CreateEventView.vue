@@ -20,132 +20,135 @@ const error = ref('')
 
 onMounted(async () => {
   try {
-    const venuesResponse = await fetch('http://localhost:5000/api/venues')
-    const usersResponse = await fetch('http://localhost:5000/api/users')
+	const venuesResponse = await fetch('http://localhost:5000/api/venues')
+	const usersResponse = await fetch('http://localhost:5000/api/users')
 
-    venues.value = await venuesResponse.json()
-    users.value = await usersResponse.json()
+	venues.value = await venuesResponse.json()
+	users.value = await usersResponse.json()
   } catch (err) {
-    error.value = 'Failed to load users or venues'
+	error.value = 'Failed to load users or venues'
   }
 })
 
 async function createEvent() {
-  loading.value = true
   error.value = ''
 
   try {
-    const response = await fetch('http://localhost:5000/api/events', {
-      method: 'POST',
 
-      headers: {
-        'Content-Type': 'application/json',
-      },
+	const response = await fetch('http://localhost:5000/api/events', {
+	  method: 'POST',
 
-      body: JSON.stringify({
-        title: title.value,
-        description: description.value,
-        startsAt: startsAt.value,
-        price: price.value,
-        venue: venue.value,
-        organizer: organizer.value,
+	  headers: {
+		'Content-Type': 'application/json',
+	  },
 
-        categories: categories.value
-          .split(',')
-          .map((category) => category.trim())
-          .filter(Boolean),
-      }),
-    })
+	  body: JSON.stringify({
+		title: title.value,
+		description: description.value,
+		startsAt: startsAt.value,
+		price: price.value,
 
-    const data = await response.json()
+		venue: venue.value,
+		organizer: organizer.value,
+		categories: categories.value
+		  .split(',')
+		  .map((category) => category.trim())
+		  .filter(Boolean),
+	  }),
+	})
 
-    if (!response.ok) {
-      throw new Error(data.message || 'Failed to create event')
-    }
+	const data = await response.json()
 
-    router.push(`/events/${data._id}`)
-  } catch (err) {
-    error.value = err.message
-  } finally {
-    loading.value = false
+
+
+	// 400 , 404 
+	if (!response.ok) {
+	  throw new Error(data.message || 'Failed to create event')
+	}
+
+	router.push(`/events/${data._id}`)
+  } 
+ 	//server off 
+  catch (err) {
+	error.value = err.message
   }
 }
 </script>
 
 <template>
   <section>
-    <h2>Create Event</h2>
+	<h2>Create Event</h2>
 
-    <form @submit.prevent="createEvent">
-      <div>
-        <label>Title</label>
-        <input v-model="title" type="text" required />
-      </div>
+	<form @submit.prevent="createEvent">
+	  <div>
+		<label>Title</label>
+		<input v-model="title" type="text" required />
+	  </div>
 
-      <div>
-        <label>Description</label>
-        <textarea v-model="description" required></textarea>
-      </div>
+	  <div>
+		<label>Description</label>
+		<textarea v-model="description" required></textarea>
+	  </div>
 
-      <div>
-        <label>Date and time</label>
-        <input v-model="startsAt" type="datetime-local" required />
-      </div>
+	  <div>
+		<label>Date and time</label>
+		<input v-model="startsAt" type="datetime-local" required />
+	  </div>
 
-      <div>
-        <label>Price</label>
-        <input v-model.number="price" type="number" min="0" required />
-      </div>
+	  <div>
+		<label>Price</label>
+		<input v-model.number="price" type="number" min="0" required />
+	  </div>
 
-      <div>
-        <label>Venue</label>
+	  <div>
+		<label>Venue</label>
 
-        <select v-model="venue" required>
-          <option value="">Select venue</option>
+		<select v-model="venue" required>
+		  <option value="">Select venue</option>
 
-          <option
-            v-for="item in venues"
-            :key="item._id"
-            :value="item._id"
-          >
-            {{ item.name }} — {{ item.city }}
-          </option>
-        </select>
-      </div>
+		  <option
+			v-for="item in venues"
+			:key="item._id"
+			:value="item._id"
+		  >
+			{{ item.name }} — {{ item.city }}
+		  </option>
+		</select>
+	  </div>
 
-      <div>
-        <label>Organizer</label>
+	  <div>
+		<label>Organizer</label>
 
-        <select v-model="organizer" required>
-          <option value="">Select organizer</option>
+		<select v-model="organizer" required>
+		  <option value="">Select organizer</option>
 
-          <option
-            v-for="user in users"
-            :key="user._id"
-            :value="user._id"
-          >
-            {{ user.name }}
-          </option>
-        </select>
-      </div>
+		  <option
+			v-for="user in users"
+			:key="user._id"
+			:value="user._id"
+		  >
+			{{ user.name }}
+		  </option>
+		</select>
+	  </div>
 
-      <div>
-        <label>Categories</label>
+	  <div>
+		<label>Categories</label>
 
-        <input
-          v-model="categories"
-          type="text"
-          placeholder="Technology, Workshop"
-        />
-      </div>
+		<input
+		  v-model="categories"
+		  type="text"
+		  placeholder="Technology, Workshop"
+		/>
+	  </div>
 
-      <p v-if="error">
-        {{ error }}
-      </p>
+	  <p v-if="error">
+		{{ error }}
+	  </p>
 
-      <button type="submit" :disabled="loading">
-        {{ loading ? 'Creating...' : 'Create Event' }}
-      </button>
-    </form>
+	  <button type="submit" :disabled="loading">
+		{{ loading ? 'Creating...' : 'Create Event' }}
+	  </button>
+	</form>
   </section>
 </template>

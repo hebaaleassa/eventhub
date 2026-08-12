@@ -8,10 +8,12 @@ const selectedUserId = ref(
   localStorage.getItem('selectedUserId') || ''
 )
 
+// to use inject in other files
 provide('selectedUserId', selectedUserId)
 
+//for the refreach
 watch(selectedUserId, (newUserId) => {
-  localStorage.setItem('selectedUserId', newUserId)
+localStorage.setItem('selectedUserId', newUserId)
 })
 
 onMounted(async () => {
@@ -19,6 +21,9 @@ onMounted(async () => {
   users.value = await response.json()
 })
 </script>
+
+
+
 <template>
   <header>
     <h1>EventHub</h1>
